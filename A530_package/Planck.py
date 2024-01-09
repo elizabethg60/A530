@@ -1,0 +1,2 @@
+def Planck():
+    print("test")
