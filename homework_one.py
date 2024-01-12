@@ -93,8 +93,4 @@ plt.legend(fontsize = 12)
 plt.yscale("log")
 plt.xscale("log")
 plt.savefig("Figures/hw_one_figures/sample_biii.png", bbox_inches='tight')
-plt.show()
-
-
-#read latex guidelines and write up latex portion
-#submit! 
+plt.show() 
