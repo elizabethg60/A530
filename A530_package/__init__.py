@@ -1,1 +1,1 @@
-from .Planck import Planck, box_integrator
+from .Planck import Planck, box_integrator, integrate_Planck
