@@ -22,7 +22,17 @@ def box_integrator(x, y): # array of x and y points
 
 def integrate_Planck(temp, x_min, x_max, density): # temp: K, wavenumber min and max value: μm^-1, density of wavenumber points
 # function to integrate Planck 
-    wavenumber_microns = np.linspace(x_min, x_max, density)
+    wavenumber_microns = np.arange(x_min, x_max, density)
     wavelengths = 1 / wavenumber_microns
     intensity_function = Planck(constants.c.cgs.value / (wavelengths/1e4), temp)
     return box_integrator(wavenumber_microns, intensity_function)
+
+def intensity_integral(n, x):
+# function for the integral portion of the emergent intensity equation 
+    return (x**n)*(np.exp(-x))
+
+def integrate_intensity(n, x_min, x_max, step):
+# function to integrate the intensity integral
+    x_array = np.arange(x_min, x_max, step)
+    intensity_function = intensity_integral(n, x_array)
+    return box_integrator(x_array, intensity_function)
