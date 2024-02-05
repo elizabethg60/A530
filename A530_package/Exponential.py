@@ -26,3 +26,9 @@ def eddington_flux(source_func, tau_array, a0, a1, a2):
     E_2 = sc.expn(2, tau_array)
     S_v = source_func(tau_array, a0, a1, a2)
     return 0.5*integrate.simpson(E_2*S_v, tau_array)
+
+def eddington_flux_planck(planck, tau_array):
+# computes the eddington flux under LTE when source = planck 
+    E_2 = sc.expn(2, tau_array)
+    S_v = planck
+    return 0.5*integrate.simpson(E_2*S_v, tau_array)
