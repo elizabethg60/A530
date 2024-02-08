@@ -32,3 +32,7 @@ def eddington_flux_planck(planck, tau_array):
     E_2 = sc.expn(2, tau_array)
     S_v = planck
     return 0.5*integrate.simpson(E_2*S_v, tau_array)
+
+def D(func, x, h):
+# computes the numerical derivative 
+    return (func(x+h)-func(x))/h

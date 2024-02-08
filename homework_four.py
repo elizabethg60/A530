@@ -17,14 +17,14 @@ a0 = a1 = 1
 a2 = 2
 
 #set array of optical depths 
-x_min = 10**(-16) 
-x_max = 50
-step = 10**(-5) 
+x_min = 10**(-5) 
+x_max = 30
+step = 10**(-6) 
 tau_array = np.power(10, np.arange(np.log10(x_min), np.log10(x_max), step))
 
 print("eddington flux for quadratic source function: {}".format(eddington_flux(quadratic_source, tau_array, a0, a1, a2)))
-#eddington flux for quadratic source function: 0.9166666666666665
+#eddington flux for quadratic source function: 0.9166616669497857
 print("eddington flux for linear source function: {}".format(eddington_flux(linear_source, tau_array, a0, a1, a2)))
-#eddington flux for linear source function: 0.41666666666666663
+#eddington flux for linear source function: 0.41666166695251616
 
 #smaller eddington flux for linear source function as expected 
