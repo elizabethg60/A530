@@ -16,7 +16,7 @@ theta_arr = np.arange(0.2, 2.2, step = 0.2)
 temp_arr = 5040/theta_arr
 
 #calculate the partition function for an arbitrary species at an arbitrary temperature
-element = "Tm"
+element = "H"
 temperature = 4000
 # #returns log of the partition function
 # print("log partition function: {}".format(partition(element, temperature, partition_function, temp_arr)))
