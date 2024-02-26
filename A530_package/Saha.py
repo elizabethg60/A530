@@ -33,12 +33,12 @@ def partition(element, temperature, data, temp_arr):
     #fit a cubic spline to data to get partition function at a given temp
     cs = CubicSpline(new_temp_arr[::-1], partition_arr[::-1])
     #plot for confirmation 
-    plt.scatter(new_temp_arr, partition_arr)
-    x_range = np.arange(min(new_temp_arr), max(new_temp_arr), 0.1)
-    plt.plot(x_range, cs(x_range), label='Cubic Spline')
-    plt.xlabel("temperature (K)")
-    plt.ylabel("log partition function")
-    plt.show()
+    # plt.scatter(new_temp_arr, partition_arr)
+    # x_range = np.arange(min(new_temp_arr), max(new_temp_arr), 0.1)
+    # plt.plot(x_range, cs(x_range), label='Cubic Spline')
+    # plt.xlabel("temperature (K)")
+    # plt.ylabel("log partition function")
+    # plt.show()
 
     return cs(temperature)
 
