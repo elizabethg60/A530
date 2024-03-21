@@ -40,7 +40,7 @@ def Pe_converge(Pg, temperature, Pe):
 # returns the converged Pe value using iterations of equation 9.9 in Gray
 
     #set convergence tolerance
-    tol = 10**(-16)
+    tol = 10**(-8)
     #initial difference between LHS and RHS of equation 9.9
     diff = np.abs(Pe - Pe_equation(Pg, temperature, Pe))
     #iterate till difference meets the convergence tolerance
