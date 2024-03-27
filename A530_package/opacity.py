@@ -5,6 +5,7 @@ I = 13.598
 loge = 0.43429
 R = 1.09678*10**(-3)
 alpha_0 = 1.0443*10**(-26)
+alpha_e = 0.6648*10**(-24)
 a_0 = 0.1199654
 a_1 = -1.18267*10**(-6)
 a_2 = 2.64243*10**(-7)
@@ -71,6 +72,10 @@ def opacity_H_bf(wavelength, temp):
             total = total + ((wavelength/n)**3)*gaunt_bf(wavelength,n)*(10**(-theta(temp)*chi_n(n)))
     return total*alpha_0
 
-def opacity_total(H_bf, H_ff, neg_H_bf, neg_H_ff, temp, wavelength, Pe):
+def opacity_electron(Pe, Pg, A):
+#returns the opacity of electron for a given pressures and abundances
+    return alpha_e*(Pe/(Pg-Pe))*A
+
+def opacity_total(H_bf, H_ff, neg_H_bf, neg_H_ff, temp, wavelength, Pe, electron):
 #returns total opacity for a given Pe, wavelength, and temperature
-    return ((H_bf + H_ff + neg_H_bf)*(1-10**(-theta(temp)*chi_lambda(wavelength))) + neg_H_ff)
+    return ((H_bf + H_ff + neg_H_bf)*(1-10**(-theta(temp)*chi_lambda(wavelength)))) + electron
