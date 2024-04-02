@@ -14,8 +14,7 @@ you calculate the various terms that contribute to the extinction coefficient?
 """
 
 #read in data
-#path = '/Users/efg5335/Desktop/Courses/A530/data/'
-path = '/Users/elizabethgonzalez/Desktop/Courses/A530/data/'
+path = '/Users/efg5335/Desktop/Courses/A530/data/'
 solar_abundance = pd.read_csv(path + 'Solar_Data/SolarAbundance.txt', sep="	")
 partition_function = pd.read_csv(path + 'RepairedPartitionFunctions.txt', sep= ' ', header=None)
 ionization_potential = pd.read_fwf(path + 'ioniz.txt', header=None)
@@ -23,7 +22,7 @@ theta_arr = np.arange(0.2, 2.2, step = 0.2)
 temp_arr = 5040/theta_arr
 
 VALIIIC = pd.read_csv(path + 'Solar_Data/VALIIIC_sci_e.txt', sep= ' ', header=None)
-VALIIIC.set_axis(["h", "m", "tau_500", "T", "V", "n_H", "n_e", "Ptotal", "Pgas/Ptotal", "rho"], axis=1#, inplace=True)
+VALIIIC.set_axis(["h", "m", "tau_500", "T", "V", "n_H", "n_e", "Ptotal", "Pgas/Ptotal", "rho"], axis=1, inplace=True)
 
 #required constants (cgs)
 first_lambda = 5889.95 / (10**8)
@@ -54,7 +53,7 @@ Pe = Pe_converge(Pg, temperature, Pe_initial)
 extinction_coef_first = []
 extinction_coef_second = []
 extinction_coef_sum = []
-wavelength_range = np.linspace(5.5*10**-5, 6*10**-5, 50)
+wavelength_range = np.linspace(5.8*10**-5, 6*10**-5, 500)
 for i in wavelength_range:
     first = extinction_coefficient(first_A, first_g_lower, first_g_upper, c/first_lambda, c/i, temperature, element_ion_pot, first_C4, Pe, Pg)
     second = extinction_coefficient(second_A, second_g_lower, second_g_upper, c/second_lambda, c/i, temperature, element_ion_pot, second_C4, Pe, Pg)
@@ -62,16 +61,15 @@ for i in wavelength_range:
     extinction_coef_second.append(second)
     extinction_coef_sum.append(first + second)
 
-plt.plot(wavelength_range, extinction_coef)
-
-plt.plot(wavelength_range, extinction_coef_first, linewidth = 2, label = 'λ = 5889.95', color = 'r')
-plt.plot(wavelength_range, extinction_coef_second, linewidth = 2, label = 'λ = 5895.924', color = 'g')
-plt.plot(wavelength_range, extinction_coef_sum, linewidth = 2, label = 'Sum', color = 'k')
+plt.plot(wavelength_range*10**8, extinction_coef_first, linewidth = 2, label = 'λ = 5889.95', color = 'r')
+plt.plot(wavelength_range*10**8, extinction_coef_second, linewidth = 2, label = 'λ = 5895.924', color = 'g')
+plt.plot(wavelength_range*10**8, extinction_coef_sum, linewidth = 2, label = 'Sum', color = 'k')
 plt.xlabel("wavelength [Å]", fontsize = 12)
-plt.ylabel("extinction coefficient", fontsize = 12)
+plt.ylabel("log extinction coefficient", fontsize = 12)
 plt.xticks(fontsize = 12) 
 plt.yticks(fontsize = 12) 
 plt.legend(fontsize = 12)
 plt.legend()
+plt.yscale('log')
 plt.savefig("Figures/hw_ten_figures/extinction.pdf", bbox_inches='tight')
 plt.show()
