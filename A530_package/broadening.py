@@ -2,61 +2,60 @@ import numpy as np
 import scipy
 
 #required constants (cgs)
-first_lambda = 5889.95
-first_g_lower = 2
-first_g_upper = 4
-first_A = 6.16 * 10**-1 * 10**8
-first_stark = np.log10(-15.17)
-
-second_lambda = 5895.924 
-second_g_lower = 2
-second_g_upper = 2
-second_A = 6.14 * 10**-1 * 10**8
-second_stark = np.log10(-15.33)
-
 c = 3 * 10**10
 h = 6.62 * 10**-27
 k = 1.38 * 10**-16
 m = 3.82 * 10**-23
-micro = #TO DO 
+micro = 0 
 
-def B_ul(Aul, freq):
+def B_ul(Aul, freq_center):
 #returns Bul value given relation to Aul
-    return Aul / ((2*h*freq**3)/ c**2)
+    return Aul / ((2*h*freq_center**3)/ c**2)
 
-def B_lu(Bul, gu, gl):
+def B_lu(Aul, freq_center, gu, gl):
 #returns Blu value given statistical weight ratio from Bul
+    Bul = B_ul(Aul, freq_center)
     return Bul * (gu/gl)
 
-def doppler_width(freq, temp):
+def doppler_width(freq_center, temp):
 #returns doppler width
-    return (freq/c)*np.sqrt((2*k*temp)/m + micro**2)
+    return (freq_center/c)*np.sqrt(((2*k*temp)/m) + micro**2)
 
-def v(freq_vary, freq, dopplerwidth):
-#returns v value for the Voigt profile
-    return (freq_vary - freq) / dopplerwidth
+def C6_fct(I, freq_center):
+#returns C6 constant (Gray 11.30) #chi_n = 0
+    return 0.3*10**-30 * ((I-(h*freq_center*6.242*10**11))**-2 - (I)**-2)
+
+def gamma_6(I, freq_center, Pg, temp):
+#returns van der waals broadening (Gray 11.29)
+    C6 = C6_fct(I, freq_center)
+    return 10**(20 + (2/5)*np.log10(C6) + np.log10(Pg) - (7/10)*np.log10(temp))
+
+def gamma_4(C4, Pe, temp):
+#returns quadratic stark broadening (Gray 11.27)
+    return 10**(19 + (2/3)*C4 + np.log10(Pe) - (5/6)*np.log10(temp))
+
+def gamma_total(Aul, C4, Pe, temp, I, freq_center, Pg):
+    stark = gamma_4(C4, Pe, temp)
+    van = gamma_6(I, freq_center, Pg, temp)
+    return 4*np.pi*Aul + stark + van 
+
+def u(freq, freq_center, dopplerwidth):
+#returns u value for the Voigt profile
+    return (freq - freq_center) / dopplerwidth
 
 def a(gamma, dopplerwidth):
 #returns a value for the Voigt profile
     return gamma / (4*np.pi*dopplerwidth)
 
-def C6_fct(I, chi_n, freq):
-#returns C6 constant (Gray 11.30)
-    return 0.3*10**-30 * ((I-chi_n-h*freq)**-2 - (I - chi_n)**-2)
-
-def gamma_4(C4, Pe, T):
-#returns quadratic stark broadening (Gray 11.27)
-    return np.log10(19 + (2/3)*np.log10(C4) + np.log10(Pe) - (5/6)*np.log10(T))
-
-def gamma_6(C6, Pg, T):
-#returns van der waals broadening (Gray 11.29)
-    return np.log10(20 + (2/5)*np.log10(C6) + np.log10(Pg) - (7/10)*np.log10(T))
-
-def gamma_total(natural, stark, van):
-    return natural + stark + van 
-
-def extinction_coefficient(freq, Blu, a, u):
+def extinction_coefficient(Aul, gu, gl, freq_center, freq, temp, I, C4, Pe, Pg):
 #returns the extinction coefficient
-    voigt = numpy.real(scipy.special.wofz(u + 1j * a))
+    dopplerwidth = doppler_width(freq_center, temp)
+    gamma = gamma_total(Aul, C4, Pe, temp, I, freq_center, Pg)
 
-    return ((h*freq)/(4*np.pi)) * Blu * voigt
+    a_constant = a(gamma, dopplerwidth)
+    u_constant = u(freq, freq_center, dopplerwidth)
+    voigt = np.real(scipy.special.wofz(u_constant + 1j * a_constant))
+
+    Blu = B_lu(Aul, freq_center, gu, gl)
+
+    return ((h*freq_center)/(4*np.pi)) * Blu * voigt
