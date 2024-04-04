@@ -6,7 +6,7 @@ c = 3 * 10**10
 h = 6.62 * 10**-27
 k = 1.38 * 10**-16
 m = 3.82 * 10**-23
-micro = 0 
+micro = 200 
 
 def B_ul(Aul, freq_center):
 #returns Bul value given relation to Aul
