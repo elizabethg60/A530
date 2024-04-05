@@ -93,17 +93,16 @@ opacity_H_ff_arr = []
 opacity_H_bf_arr = []
 opacity_electron_arr = []
 
-fe_first = (first_g_upper / 10**(partition("Na", temperature, partition_function, temp_arr)))
-fe_second = (second_g_upper / 10**(partition("Na", temperature, partition_function, temp_arr)))
+fe_ground = (second_g_upper / 10**(partition("Na", temperature, partition_function, temp_arr)))
 
 Na_A = float(solar_abundance.loc[solar_abundance['element'] == "Na"]['A'])
 n_H = 1.166*10**17
-rho = 2.727*10**-7 * n_H
+rho = 2.727*10**-7
 
 continuous_opacities = []
 first_line_opacities = []
 second_line_opacities = []
-wavelength_arr_ang = np.linspace(5800, 6000, 500) #fix 
+wavelength_arr_ang = np.linspace(5800, 6000, 500) 
 for i in range(0, len(wavelength_arr_ang)):
     neg = False
     neg_H_bf_value = opacity_neg_H_bf(Pe, wavelength_arr_ang[i], temperature)
@@ -124,8 +123,8 @@ for i in range(0, len(wavelength_arr_ang)):
     continuous_opacities.append(opacity_total_arr/(2.2701*10**(-24)))
 
     freq_cgs = c / (wavelength_arr_ang[i] / (10**8))
-    first_line_opacities.append(((extinction_coef_first[i]*Na_A*n_H*fe_first*(phi/Pe))/rho)*(1-np.exp(-(h*freq_cgs)/(k*temperature))))
-    second_line_opacities.append(((extinction_coef_second[i]*Na_A*n_H*fe_second*(phi/Pe))/rho)*(1-np.exp(-(h*freq_cgs)/(k*temperature))))
+    first_line_opacities.append(((extinction_coef_first[i]*Na_A*n_H*fe_ground*(1/(1+(phi/Pe))))/rho)*(1-np.exp(-(h*freq_cgs)/(k*temperature))))
+    second_line_opacities.append(((extinction_coef_second[i]*Na_A*n_H*fe_ground*(1/(1+(phi/Pe))))/rho)*(1-np.exp(-(h*freq_cgs)/(k*temperature))))
 
 plt.plot(wavelength_arr_ang, first_line_opacities, linewidth = 2, label = 'λ = 5889.95', color = 'r')
 plt.plot(wavelength_arr_ang, second_line_opacities, linewidth = 2, label = 'λ = 5895.924', color = 'g')

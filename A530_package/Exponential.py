@@ -36,3 +36,6 @@ def eddington_flux_planck(planck, tau_array):
 def D(func, x, h):
 # computes the numerical derivative 
     return (func(x+h)-func(x))/h
+
+def tau_eta(eta):
+    return (2/3)*(1+eta) 

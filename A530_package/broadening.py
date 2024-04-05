@@ -6,7 +6,7 @@ c = 3 * 10**10
 h = 6.62 * 10**-27
 k = 1.38 * 10**-16
 m = 3.82 * 10**-23
-micro = 200 
+micro = 200000 
 
 def B_ul(Aul, freq_center):
 #returns Bul value given relation to Aul
@@ -58,4 +58,4 @@ def extinction_coefficient(Aul, gu, gl, freq_center, freq, temp, I, C4, Pe, Pg):
 
     Blu = B_lu(Aul, freq_center, gu, gl)
 
-    return ((h*freq_center)/(4*np.pi)) * Blu * voigt
+    return ((h*freq_center)) * Blu * (voigt/(np.sqrt(np.pi)*dopplerwidth))
