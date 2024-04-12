@@ -37,51 +37,51 @@ Pg = VALIIIC["Ptotal"]*VALIIIC["Pgas/Ptotal"]
 n_H = VALIIIC["n_H"]
 n_e = VALIIIC["n_e"]
 
-# Pe_array = []
-# n_p = []
-# for i in range(0, len(temperature)):
-#     #initial guess for Pe 
-#     element_ion_pot = float(ionization_potential.loc[ionization_potential[1] == "H"][3])
-#     phi = saha("H", temperature[i], partition_function, temp_arr, element_ion_pot)
-#     Pe_initial = np.sqrt(phi*Pg[i])
+Pe_array = []
+n_p = []
+for i in range(0, len(temperature)):
+    #initial guess for Pe 
+    element_ion_pot = float(ionization_potential.loc[ionization_potential[1] == "H"][3])
+    phi = saha("H", temperature[i], partition_function, temp_arr, element_ion_pot)
+    Pe_initial = np.sqrt(phi*Pg[i])
 
-#     #converge to a Pe value 
-#     Pe_array.append(Pe_converge(Pg[i], temperature[i], Pe_initial))
-#     #determine corresponding n_p value
-#     n_p.append(n_H[i]*(phi/Pe_array[i]))
+    #converge to a Pe value 
+    Pe_array.append(Pe_converge(Pg[i], temperature[i], Pe_initial))
+    #determine corresponding n_p value
+    n_p.append(n_H[i]*(phi/Pe_array[i]))
 
-# #reproduce the top part of Figure 8.8
-# plt.plot(VALIIIC["h"], np.log10(n_e), label = '$n_{e}$', color = 'k')
-# plt.plot(VALIIIC["h"], np.log10(n_p), label = '$n_{p}$', color = 'r')
-# plt.xlim(0,800)
-# plt.ylim(8,14)
-# plt.gca().invert_xaxis()
-# plt.xlabel("h (km)")
-# plt.ylabel("log n")
-# plt.legend()
-# plt.savefig("Figures/hw_nine_figures/fig8_8.pdf")
-# plt.show()
+#reproduce the top part of Figure 8.8
+plt.plot(VALIIIC["h"], np.log10(n_e), label = '$n_{e}$', color = 'k')
+plt.plot(VALIIIC["h"], np.log10(n_p), label = '$n_{p}$', color = 'r')
+plt.xlim(0,800)
+plt.ylim(8,14)
+plt.gca().invert_xaxis()
+plt.xlabel("h (km)")
+plt.ylabel("log n")
+plt.legend()
+plt.savefig("Figures/hw_nine_figures/fig8_8.pdf")
+plt.show()
 
-# #ionization temperature at h = 800km
-# output_array = np.stack((temperature[1:,], np.log10(n_p)[1:,]), axis=1)
-# output_array=output_array[output_array[:, 0].argsort()]
-# cs = CubicSpline(output_array[:, 0], output_array[:, 1])
+#ionization temperature at h = 800km
+output_array = np.stack((temperature[1:,], np.log10(n_p)[1:,]), axis=1)
+output_array=output_array[output_array[:, 0].argsort()]
+cs = CubicSpline(output_array[:, 0], output_array[:, 1])
 
-# initial_temp = 112000
-# y_diff = np.abs(cs(initial_temp) - 11)
-# tol = 10**-3
-# while y_diff > tol:
-#     initial_temp = initial_temp + 2
-#     y_diff = np.abs(cs(initial_temp) - 11)
-# print(initial_temp)
+initial_temp = 112000
+y_diff = np.abs(cs(initial_temp) - 11)
+tol = 10**-3
+while y_diff > tol:
+    initial_temp = initial_temp + 2
+    y_diff = np.abs(cs(initial_temp) - 11)
+print(initial_temp)
 
-# """
-# c) Ignoring this issue of NLTE, attempt to reproduce the bottom plot using the solar
-# abundances in the text file from Gray on Canvas. Use your function from Problem 17 to
-# calculate the LTE electron partial pressure Pe at every depth (i.e. do not use the value in
-# the VALIIIC table for this part) and use this to compute the ionization fractions of Fe,
-# Mg, Si, and H. At what heights are NLTE effects apparently important?
-# """
+"""
+c) Ignoring this issue of NLTE, attempt to reproduce the bottom plot using the solar
+abundances in the text file from Gray on Canvas. Use your function from Problem 17 to
+calculate the LTE electron partial pressure Pe at every depth (i.e. do not use the value in
+the VALIIIC table for this part) and use this to compute the ionization fractions of Fe,
+Mg, Si, and H. At what heights are NLTE effects apparently important?
+"""
 
 elements_arr = ["Fe", "Mg", "Si", "H"]
 n_contributions_arr = [[], [], [], []]
@@ -99,15 +99,15 @@ for j in range(0, len(elements_arr)):
         abundance = float(solar_abundance.loc[solar_abundance['element'] == elements_arr[j]]['A'])
         n_contributions_arr[j].append(abundance*n_H[i]*((phi/Pe_current)/(1+(phi/Pe_current))))        
 
-#     plt.plot(VALIIIC["h"], np.log10(n_contributions_arr[j]/n_e), label = elements_arr[j])
-# plt.xlim(0,800)
-# plt.ylim(-1,1)
-# plt.gca().invert_xaxis()
-# plt.xlabel("h (km)")
-# plt.ylabel("contributions to $n_{e}$")
-# plt.legend()
-# plt.savefig("Figures/hw_nine_figures/fig8_8b.pdf")
-# plt.show()
+    plt.plot(VALIIIC["h"], np.log10(n_contributions_arr[j]/n_e), label = elements_arr[j])
+plt.xlim(0,800)
+plt.ylim(-1,1)
+plt.gca().invert_xaxis()
+plt.xlabel("h (km)")
+plt.ylabel("contributions to $n_{e}$")
+plt.legend()
+plt.savefig("Figures/hw_nine_figures/fig8_8b.pdf")
+plt.show()
 
 """
 19. Opacity and Pressure in the VALIIIC Atmosphere
@@ -116,16 +116,16 @@ Overplot the electron pressure implied by the perfect gas law given the electron
 temperature listed in VALiiiC. Where are NLTE ionization effects apparently important?
 """
 Pe_sum_arr = [sum(i) for i in zip(*Pe_element_arr)]
-# plt.plot(VALIIIC["h"], np.log10(Pe_sum_arr), label = 'computed')
-# plt.plot(VALIIIC["h"], np.log10(n_e*1.38*10**(-16)*temperature), label = 'perfect gas law')
-# plt.xlim(0,800)
-# plt.ylim(-5,5)
-# plt.gca().invert_xaxis()
-# plt.xlabel("h (km)")
-# plt.ylabel("$P_{e}$")
-# plt.legend()
-# plt.savefig("Figures/hw_nine_figures/fig19a.pdf")
-# plt.show()
+plt.plot(VALIIIC["h"], np.log10(Pe_sum_arr), label = 'computed')
+plt.plot(VALIIIC["h"], np.log10(n_e*1.38*10**(-16)*temperature), label = 'perfect gas law')
+plt.xlim(0,800)
+plt.ylim(-5,5)
+plt.gca().invert_xaxis()
+plt.xlabel("h (km)")
+plt.ylabel("$P_{e}$")
+plt.legend()
+plt.savefig("Figures/hw_nine_figures/fig19a.pdf")
+plt.show()
 
 """
 b) Combine your work from problems 15 and 17 into a function that calculates the total
@@ -147,36 +147,36 @@ A_weighted = (solar_abundance['A'] * solar_abundance['weight']).sum()
 for j in range(0, len(elements_arr)):
     A = A + float(solar_abundance.loc[solar_abundance['element'] == elements_arr[j]]['A'])
     
-# #hardwire temperature and electron pressure according to table in hw 9
-# temp = 6420
-# Pe = 57.0
-# Pg_single = 1.13*10**5
+#hardwire temperature and electron pressure according to table in hw 9
+temp = 6420
+Pe = 57.0
+Pg_single = 1.13*10**5
 
-# #collect the values for each opacity term 
-# opacity_neg_H_bf_arr = []
-# opacity_neg_H_ff_arr = []
-# opacity_H_ff_arr = []
-# opacity_H_bf_arr = []
-# opacity_electron_arr = []
+#collect the values for each opacity term 
+opacity_neg_H_bf_arr = []
+opacity_neg_H_ff_arr = []
+opacity_H_ff_arr = []
+opacity_H_bf_arr = []
+opacity_electron_arr = []
 
-# wavelength = 5000
-# neg = False
-# neg_H_bf_value = opacity_neg_H_bf(Pe, wavelength, temp)
-# if neg_H_bf_value >= 0.0 and neg == False:
-#     opacity_neg_H_bf_arr.append(opacity_neg_H_bf(Pe, wavelength, temp))
-# else: 
-#     opacity_neg_H_bf_arr.append(0.0)
-#     neg = True
+wavelength = 5000
+neg = False
+neg_H_bf_value = opacity_neg_H_bf(Pe, wavelength, temp)
+if neg_H_bf_value >= 0.0 and neg == False:
+    opacity_neg_H_bf_arr.append(opacity_neg_H_bf(Pe, wavelength, temp))
+else: 
+    opacity_neg_H_bf_arr.append(0.0)
+    neg = True
 
-# opacity_neg_H_ff_arr.append(opacity_neg_H_ff(Pe, wavelength, temp))
-# opacity_H_ff_arr.append(opacity_H_ff(wavelength, temp))
-# opacity_H_bf_arr.append(opacity_H_bf(wavelength, temp))
-# opacity_electron_arr.append(opacity_electron(Pe, Pg_single, A))
+opacity_neg_H_ff_arr.append(opacity_neg_H_ff(Pe, wavelength, temp))
+opacity_H_ff_arr.append(opacity_H_ff(wavelength, temp))
+opacity_H_bf_arr.append(opacity_H_bf(wavelength, temp))
+opacity_electron_arr.append(opacity_electron(Pe, Pg_single, A))
 
-# #compute total continuous opacity from hydrogen given electron pressue, temperature, and wavelength
-# opacity_total_arr = opacity_total(np.array(opacity_H_bf_arr), np.array(opacity_H_ff_arr), np.array(opacity_neg_H_bf_arr), np.array(opacity_neg_H_ff_arr), temp, wavelength, Pe, np.array(opacity_electron_arr))
+#compute total continuous opacity from hydrogen given electron pressue, temperature, and wavelength
+opacity_total_arr = opacity_total(np.array(opacity_H_bf_arr), np.array(opacity_H_ff_arr), np.array(opacity_neg_H_bf_arr), np.array(opacity_neg_H_ff_arr), temp, wavelength, Pe, np.array(opacity_electron_arr))
 
-# print(opacity_total_arr/(2.2701*10**(-24)))
+print(opacity_total_arr/(2.2701*10**(-24)))
 
 """
 d) Using your Pe values from Problem 18(c), calculate κ500 as a function of τ500 with your
