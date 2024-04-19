@@ -99,7 +99,7 @@ for j in range(0, len(elements_arr)):
         abundance = float(solar_abundance.loc[solar_abundance['element'] == elements_arr[j]]['A'])
         n_contributions_arr[j].append(abundance*n_H[i]*((phi/Pe_current)/(1+(phi/Pe_current))))        
 
-    plt.plot(VALIIIC["h"], np.log10(n_contributions_arr[j]/n_e), label = elements_arr[j])
+    plt.plot(VALIIIC["h"], n_contributions_arr[j]/n_e, label = elements_arr[j])
 plt.xlim(0,800)
 plt.ylim(-1,1)
 plt.gca().invert_xaxis()
