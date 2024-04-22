@@ -73,7 +73,6 @@ tol = 10**-3
 while y_diff > tol:
     initial_temp = initial_temp + 2
     y_diff = np.abs(cs(initial_temp) - 11)
-print(initial_temp)
 
 """
 c) Ignoring this issue of NLTE, attempt to reproduce the bottom plot using the solar
@@ -84,12 +83,15 @@ Mg, Si, and H. At what heights are NLTE effects apparently important?
 """
 
 elements_arr = ["Fe", "Mg", "Si", "H"]
+elements_arr_for_phi = ["H", "He", "C", "Si", "Fe", "Mg", "Ni", "Cr", "Ca", "Na", "K"]
 n_contributions_arr = [[], [], [], []]
 Pe_element_arr = [[], [], [], []]
 for j in range(0, len(elements_arr)):
     for i in range(0, len(temperature)):
-        element_ion_pot = float(ionization_potential.loc[ionization_potential[1] == elements_arr[j]][3])
-        phi = saha(elements_arr[j], temperature[i], partition_function, temp_arr, element_ion_pot)
+        phi = 0
+        for element_ind in elements_arr_for_phi:
+            element_ion_pot = float(ionization_potential.loc[ionization_potential[1] == element_ind][3])
+            phi += saha(element_ind, temperature[i], partition_function, temp_arr, element_ion_pot)
         Pe_initial = np.sqrt(phi*Pg[i])
 
         #converge to a Pe value 
@@ -101,7 +103,7 @@ for j in range(0, len(elements_arr)):
 
     plt.plot(VALIIIC["h"], n_contributions_arr[j]/n_e, label = elements_arr[j])
 plt.xlim(0,800)
-plt.ylim(-1,1)
+plt.ylim(0,1)
 plt.gca().invert_xaxis()
 plt.xlabel("h (km)")
 plt.ylabel("contributions to $n_{e}$")
@@ -118,11 +120,11 @@ temperature listed in VALiiiC. Where are NLTE ionization effects apparently impo
 Pe_sum_arr = [sum(i) for i in zip(*Pe_element_arr)]
 plt.plot(VALIIIC["h"], np.log10(Pe_sum_arr), label = 'computed')
 plt.plot(VALIIIC["h"], np.log10(n_e*1.38*10**(-16)*temperature), label = 'perfect gas law')
-plt.xlim(0,800)
-plt.ylim(-5,5)
-plt.gca().invert_xaxis()
+# plt.xlim(0,800)
+# plt.ylim(-5,5)
+# plt.gca().invert_xaxis()
 plt.xlabel("h (km)")
-plt.ylabel("$P_{e}$")
+plt.ylabel("log $P_{e}$")
 plt.legend()
 plt.savefig("Figures/hw_nine_figures/fig19a.pdf")
 plt.show()
@@ -230,5 +232,6 @@ g = 10**4.4377
 plt.plot(VALIIIC["tau_500"][1:,], np.log10(g/dPdtau))
 plt.xlabel("τ500")
 plt.ylabel("κ500")
+plt.xscale("log")
 plt.savefig("Figures/hw_nine_figures/fig19d.pdf")
 plt.show()
